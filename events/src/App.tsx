@@ -1,19 +1,16 @@
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import EventsList from './pages/EventsList'
+import EventDetails from './pages/EventDetails';
+import Home from './pages/Home';
 
-function App() {
 
+export default function App() {
   return (
-    <>
-      <h1>Welcome To Event Arafah</h1>
-      <div className="card">
-        Book an Event
-        
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/events" element={<EventsList />} /> */}
+        <Route path="/events" element={<EventDetails />} />
+        <Route path="/events/:id" element={<EventDetails />} />
+      </Routes>
+  );
 }
-
-export default App
