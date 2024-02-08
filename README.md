@@ -2,7 +2,7 @@
 # Full Stack Event Management Application
 
 ## Overview
-This project is a simple full stack application for managing events. It consists of a backend built with Node.js and Express, and a frontend built with React and Bootstrap. The application allows users to create, read, update, and delete event data.
+This project is a simple full stack application for managing events. It consists of a backend built with Node.js and Express, and a frontend built with React and Material UI. The application allows users to create, read, update, and delete event data.
 
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -56,7 +56,7 @@ Add additional notes about how to deploy this on a live system.
 - [Node.js](https://nodejs.org/) - The backend framework
 - [Express](https://expressjs.com/) - Backend web application framework
 - [React](https://reactjs.org/) - The frontend framework
-- [Bootstrap](https://getbootstrap.com/) - Frontend styling
+- [Material-UI](https://mui.com/) - Frontend styling
 
 ## Authors
 - Arafah Lawal

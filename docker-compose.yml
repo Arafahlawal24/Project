@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api:/usr/src/api
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb+srv://arafahlawal:Santos.jnr10!@cluster0.ukwcdk8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+    depends_on:
+      - mongo
+
+  events:
+    build:
+      context: ./events
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    volumes:
+      - ./events:/app
+    depends_on:
+      - api
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: arafahlawal
+      MONGO_INITDB_ROOT_PASSWORD: Santos.jnr10!
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
