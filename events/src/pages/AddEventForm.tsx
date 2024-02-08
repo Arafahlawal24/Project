@@ -1,5 +1,8 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Container, TextField, Button, Grid, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { addEvent } from '../feature/eventSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectEventsStatus, selectEventsError } from '../feature/eventSlice';
 
 interface Ticket {
   name: string;
@@ -10,7 +13,7 @@ interface Ticket {
 }
 
 interface EventFormValues {
-  eventName: string;
+  name: string;
   date: string;
   description: string;
   tickets: Ticket[];
@@ -25,17 +28,20 @@ const initialTicket: Ticket = {
 };
 
 interface FormErrors {
-  eventName?: string;
+  name?: string;
+  date?: string;
   tickets?: { 
     name?: string;
   }[];
 }
 
-
 export const AddEventForm: React.FC = () => {
+  const dispatch = useDispatch();
+  const eventStatus = useSelector(selectEventsStatus);
+  const eventError = useSelector(selectEventsError);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [formValues, setFormValues] = useState<EventFormValues>({
-    eventName: '',
+    name: '',
     date: '',
     description: '',
     tickets: [initialTicket],
@@ -67,8 +73,9 @@ const removeTicket = (index: number) => {
 
 const validateForm = (): boolean => {
   const errors: FormErrors = {};
-  if (!formValues.eventName.trim()) {
-    errors.eventName = "Event name is required.";
+  if (!formValues.name.trim() || !formValues.date.trim() ) {
+    errors.name = "Event name is required.";
+    errors.date = "Event date is required.";
   }
   // more validation checks later
 
@@ -89,9 +96,13 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   if (isFormValid) {
     // Submit the form data
     console.log("Submitting", formValues);
-    // dispatch(addEvent(formValues)); // Redux action dispatch, assuming you have set this up
-    // Or send directly to your backend
-    // axios.post('/api/events', formValues).then(response => { ... });
+    dispatch(addEvent(formValues));
+    setFormValues({
+        name: '',
+        date: '',
+        description: '',
+        tickets: [initialTicket],
+      });
   } else {
     console.log("Validation errors", formErrors);
   }
@@ -99,22 +110,32 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
 
   return (
-    <Container maxWidth="md">
+    <Container sx={{ mt: 6 }} maxWidth="md">
     <form onSubmit={handleSubmit}>
       <Typography variant="h3" gutterBottom>
         Add New Event
       </Typography>
+      {eventStatus === 'succeeded' && (
+        <Typography color="success.main" gutterBottom>
+          Event added successfully!
+        </Typography>
+      )}
+      {eventError && (
+        <Typography color="error.main" gutterBottom>
+          {eventError}
+        </Typography>
+      )}
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <TextField
             label="Event Name"
             fullWidth
             variant="outlined"
-            name="eventName"
-            value={formValues.eventName}
+            name="name"
+            value={formValues.name}
             onChange={handleEventChange}
-            error={!!formErrors.eventName}
-            helperText={formErrors.eventName}
+            error={!!formErrors.name}
+            helperText={formErrors.name}
           />
         </Grid>
         <Grid item xs={12}>
@@ -214,12 +235,12 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             </Grid>
         </React.Fragment>
         ))}
-        <Grid item xs={12}>
+        <Grid item xs={12} lg={6}>
         <Button onClick={addTicket} variant="contained" color="primary">
             Add Ticket
         </Button>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} lg={6}>
         <Button type="submit" variant="contained" color="primary">
             Submit Event
         </Button>

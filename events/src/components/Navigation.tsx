@@ -8,16 +8,13 @@ const Navigation: React.FC = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: 1 }}>
-          Event Manager
+          Events Manager
         </Typography>
         <Button color="inherit" component={Link} to="/">
-          Home
+          Add Event
         </Button>
         <Button color="inherit" component={Link} to="/events">
-          Events
-        </Button>
-        <Button color="inherit" component={Link} to="/create-event">
-          Add Event
+          View Events
         </Button>
       </Toolbar>
     </AppBar>

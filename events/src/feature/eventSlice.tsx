@@ -1,50 +1,91 @@
-import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
-import type { RootState } from '../../store';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { RootState } from '../../store';
+import { createSelector } from 'reselect';
 
 interface Ticket {
-  id: string;
   name: string;
-  type: string; // 'adult', 'family', 'child'
+  type: 'adult' | 'family' | 'child';
   price: number;
   bookingFee: number;
-  availability: number;
+  availability: 'available' | 'sold out';
 }
 
-interface Event {
-  id: string;
+interface EventFormValues {
   eventName: string;
   date: string;
   description: string;
-  tickets: Ticket[];
+  tickets: Ticket[]; 
 }
 
 interface EventState {
-  events: Event[];
+  events: EventFormValues[];
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
 const initialState: EventState = {
   events: [],
+  status: 'idle',
+  error: null,
 };
 
+export const fetchEvents = createAsyncThunk(
+  'events/fetchEvents',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get('http://localhost:3500/api/events');
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const addEvent = createAsyncThunk(
+  'events/addEvent',
+  async (eventData: EventFormValues, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('http://localhost:3500/api/event', eventData);
+      console.log(eventData);
+      return response.data;
+    } catch (err: any) {
+      if (axios.isAxiosError(err) && err.response) {
+        console.log(err.response.data)
+        return rejectWithValue(err.response.data);
+      } else {
+        return rejectWithValue('An unexpected error occurred');
+      }
+    }
+  }
+);
+
 const eventSlice = createSlice({
-  name: 'event',
+  name: 'events',
   initialState,
-  reducers: {
-    addEvent: {
-      reducer: (state, action: PayloadAction<Event>) => {
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(addEvent.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addEvent.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.events.push(action.payload);
-      },
-      prepare: (data: Omit<Event, 'id' | 'tickets'> & { tickets: Omit<Ticket, 'id'>[] }) => {
-        const id = nanoid();
-        const ticketsWithIds = data.tickets.map(ticket => ({ ...ticket, id: nanoid() }));
-        return { payload: { ...data, id, tickets: ticketsWithIds } };
-      },
-    },
+      })
+      .addCase(addEvent.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const { addEvent } = eventSlice.actions;
-
-export const selectEvents = (state: RootState) => state.event.events;
+export const selectEventState  = (state: RootState) => state.event  ;
+export const selectEventsError = (state: RootState) => state.event.error;
+export const selectEventsStatus = (state: RootState) => state.event.status;
+export const selectAllEvents = createSelector(
+  [selectEventState],
+  (eventState) => eventState.events
+);
 
 export default eventSlice.reducer;

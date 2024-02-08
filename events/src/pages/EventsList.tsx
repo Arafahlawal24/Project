@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { Container, Typography } from '@mui/material';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 interface Ticket {
   name: string;
@@ -12,7 +13,7 @@ interface Ticket {
 }
 
 interface Event {
-  eventName: string;
+  name: string;
   date: string;
   description: string;
   tickets: Ticket[];
@@ -24,7 +25,8 @@ const EventList: React.FC = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('/api/events');
+        const response = await axios.get('http://localhost:3500/api/events');
+        console.log(response.data)
         setEvents(response.data);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -36,9 +38,9 @@ const EventList: React.FC = () => {
   }, []);
 
   const columns: TableColumn<Event>[] = [
-    { name: 'Event Name', selector: event => event.eventName, sortable: true },
-    { name: 'Date', selector: event => event.date, sortable: true },
-    { name: 'Description', selector: event => event.description, sortable: true },
+    { name: 'Event Name', selector: event => <Link to={`/event/${event._id}`}>{event.name}</Link>, sortable: true },
+    { name: 'Date', selector: event => new Date(event.date).toLocaleDateString('en-CA'), sortable: true },
+    { name: 'Description', selector: event => event.description },
     // Add more columns as needed
   ];
 
@@ -57,18 +59,18 @@ const EventList: React.FC = () => {
         customStyles={{
           rows: {
             style: {
-              minHeight: '72px',
+              minHeight: '45px',
             },
           },
           headCells: {
             style: {
-              fontSize: '16px',
+              fontSize: '25px',
               fontWeight: 'bold',
             },
           },
           cells: {
             style: {
-              fontSize: '14px',
+              fontSize: '20px',
             },
           },
         }}

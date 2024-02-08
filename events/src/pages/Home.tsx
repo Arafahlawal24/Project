@@ -8,7 +8,6 @@ const Home = () => {
   return (
     <>
         <Grid container spacing={2} justifyContent="center" >
-            <Navigation />
             <AddEventForm />
         </Grid>
     </>

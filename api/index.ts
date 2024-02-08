@@ -5,6 +5,7 @@ import connectDb from './config/db';
 import mongoose from 'mongoose';
 import eventRoutes from './routes/eventRoutes';
 import ticketRoutes from './routes/ticketRoutes';
+import cors from 'cors';
 connectDb();
 
 const app = express();
@@ -12,7 +13,10 @@ const port = process.env.PORT;
 const router = express.Router();
 
 
-app.use(express.json());     
+app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173'
+}))     
 app.use('/api', eventRoutes); 
 app.use('/api', ticketRoutes);
 

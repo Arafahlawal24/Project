@@ -3,19 +3,35 @@ import Ticket from '../models/Ticket';
 
 
 const createEvent = async (req, res) => {
-  const { name, date } = req.body;
+  const { name, date, description, tickets } = req.body;
+
   try {
     const existingEvent = await Event.findOne({ name, date });
     if (existingEvent) {
       return res.status(400).json({ message: 'Event already exists with this name and date.' });
     }
-    const event = new Event(req.body);
+
+    // First, create the event without tickets
+    const event = new Event({ name, date, description });
     const savedEvent = await event.save();
-    res.status(201).json(savedEvent);
+
+    // Then, create tickets and associate them with the created event
+    const ticketIds = await Promise.all(tickets.map(async (ticketData) => {
+      const ticket = new Ticket({ ...ticketData, event: savedEvent._id });
+      const savedTicket = await ticket.save();
+      return savedTicket._id;
+    }));
+
+    // Finally, update the event with ticket IDs
+    savedEvent.tickets = ticketIds;
+    await savedEvent.save();
+
+    res.status(201).json({ message: "Event and Tickets saved successfully", event: savedEvent });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 const getEvents = async (req, res) => {
   try {
@@ -26,11 +42,12 @@ const getEvents = async (req, res) => {
   }
 };
 
-const getEvent = async (req, res) => {
+const getEventById  = async (req, res) => {
   try {
+    console.log(req.params)
     const event = await Event.findById(req.params.id).populate('tickets');
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: 'Event not found!!' });
     }
     res.json(event);
   } catch (error) {
@@ -69,4 +86,4 @@ const deleteEvent = async (req, res) => {
 };
   
 
-export { createEvent, getEvents, getEvent, updateEvent, deleteEvent };
+export { createEvent, getEvents, getEventById, updateEvent, deleteEvent };

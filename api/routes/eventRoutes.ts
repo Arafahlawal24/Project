@@ -1,12 +1,12 @@
 import express from 'express';
 const router = express.Router();
-import { createEvent, getEvents, getEvent, updateEvent, deleteEvent } from '../controllers/eventController'; 
+import { createEvent, getEvents, getEventById, updateEvent, deleteEvent } from '../controllers/eventController'; 
 
 router.route('/event')
 .post(createEvent);
 
 router.route('/event/:id')
-.get(getEvent)
+.get(getEventById)
 .put(updateEvent)
 .delete(deleteEvent);
 
