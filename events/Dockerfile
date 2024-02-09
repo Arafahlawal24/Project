@@ -1,19 +1,26 @@
-FROM node:16-alpine as build-stage
+# Use an official Node runtime as a parent image
+FROM node
 
-WORKDIR /app
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-RUN npm install
+# Install any dependencies
+RUN npm install --force
 
+# Bundle app source
 COPY . .
 
+# Build the React application
 RUN npm run build
 
-FROM nginx:stable-alpine as production-stage
+# Install serve to serve the static files
+RUN npm install -g serve
 
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# Make port 5000 available
+EXPOSE 5000
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Serve the app
+CMD ["serve", "-s", "build", "-l", "5000"]

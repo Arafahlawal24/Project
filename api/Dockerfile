@@ -1,10 +1,20 @@
-FROM node:16-alpine as build-stage
-WORKDIR /app
+# Use an official Node runtime as a parent image
+FROM node
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm install
+
+# Install any dependencies
+RUN npm install --force
+
+# Bundle app source
 COPY . .
-RUN npm run build
-FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+# Make port 3000 available to the world outside this container
+EXPOSE 3500
+
+# Run the app when the container launches
+CMD ["npm", "start"]
