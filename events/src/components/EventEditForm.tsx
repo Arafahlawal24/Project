@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, MenuItem } from '@mui/material';
 
 interface Ticket {
-  _id: string;
+  _id?: string;
   name: string;
   type: 'adult' | 'family' | 'child';
   price: number;
@@ -11,7 +11,7 @@ interface Ticket {
 }
 
 interface Event {
-  _id: string;
+  _id?: string;
   name: string;
   date: string;
   description: string;
@@ -23,7 +23,8 @@ interface EventEditFormProps {
   event: Event; 
   open: boolean;
   onClose: () => void;
-  onSave: (event: Event) => void; 
+  onSave: (event: Event) => Promise<void>;
+
 }
 
 export const EventEditForm: React.FC<EventEditFormProps> = ({ event, open, onClose, onSave }) => {

@@ -3,8 +3,10 @@ import { Container, TextField, Button, Grid, Typography, MenuItem, Select, FormC
 import { addEvent } from '../feature/eventSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectEventsStatus, selectEventsError } from '../feature/eventSlice';
+import { AppDispatch } from '../../store';
 
 interface Ticket {
+  _id?: string;
   name: string;
   type: 'adult' | 'family' | 'child';
   price: number;
@@ -13,12 +15,12 @@ interface Ticket {
 }
 
 interface EventFormValues {
+  _id?: string; 
   name: string;
   date: string;
   description: string;
   tickets: Ticket[];
 }
-
 const initialTicket: Ticket = {
   name: '',
   type: 'adult',
@@ -36,7 +38,7 @@ interface FormErrors {
 }
 
 export const AddEventForm: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const eventStatus = useSelector(selectEventsStatus);
   const eventError = useSelector(selectEventsError);
   const [formErrors, setFormErrors] = useState<FormErrors>({});

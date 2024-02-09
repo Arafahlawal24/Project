@@ -5,14 +5,16 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 interface Ticket {
+  _id?: string;
   name: string;
-  type: string;
+  type: 'adult' | 'family' | 'child';
   price: number;
   bookingFee: number;
   availability: 'available' | 'sold out';
 }
 
 interface Event {
+  _id?: string; // Optional for new events
   name: string;
   date: string;
   description: string;
@@ -38,7 +40,7 @@ const EventList: React.FC = () => {
   }, []);
 
   const columns: TableColumn<Event>[] = [
-    { name: 'Event Name', selector: event => <Link to={`/event/${event._id}`}>{event.name}</Link>, sortable: true },
+    { name: 'Event Name', cell: row => <Link to={`/event/${row._id}`}>{row.name}</Link>, sortable: true },
     { name: 'Date', selector: event => new Date(event.date).toLocaleDateString('en-CA'), sortable: true },
     { name: 'Description', selector: event => event.description },
     // Add more columns as needed

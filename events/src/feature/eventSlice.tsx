@@ -1,9 +1,10 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from '../../store';
 import { createSelector } from 'reselect';
 
 interface Ticket {
+  _id?: string;
   name: string;
   type: 'adult' | 'family' | 'child';
   price: number;
@@ -12,7 +13,8 @@ interface Ticket {
 }
 
 interface EventFormValues {
-  eventName: string;
+  _id?: string;
+  name: string;
   date: string;
   description: string;
   tickets: Ticket[]; 
@@ -30,11 +32,11 @@ const initialState: EventState = {
   error: null,
 };
 
-export const fetchEvents = createAsyncThunk(
+export const fetchEvents = createAsyncThunk<EventFormValues[], undefined, { rejectValue: string }>(
   'events/fetchEvents',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:3500/api/events');
+      const response = await axios.get<EventFormValues[]>('http://localhost:3500/api/events');
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -42,11 +44,11 @@ export const fetchEvents = createAsyncThunk(
   }
 );
 
-export const addEvent = createAsyncThunk(
+export const addEvent = createAsyncThunk<EventFormValues, EventFormValues, { rejectValue: string }>(
   'events/addEvent',
   async (eventData: EventFormValues, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:3500/api/event', eventData);
+      const response = await axios.post<EventFormValues>('http://localhost:3500/api/event', eventData);
       console.log(eventData);
       return response.data;
     } catch (err: any) {

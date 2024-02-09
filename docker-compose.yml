@@ -6,7 +6,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3500:3500"
     volumes:
       - ./api:/usr/src/api
     environment:
