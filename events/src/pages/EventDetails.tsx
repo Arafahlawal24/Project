@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate  } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Typography, CircularProgress, Button   } from '@mui/material';
-import {EventEditForm} from '../components/EventEditForm'; // Import the EventEditForm component
+import {EventEditForm} from '../components/EventEditForm'; 
+import {ConfirmDialog} from '../components/ConfirmDialog';
 
-
+  
 interface Ticket {
   _id?: string;
   name: string;
@@ -24,15 +25,17 @@ interface EventDetails {
 
 const EventDetails: React.FC = () => {
   const eventId = useParams();
+  const navigate = useNavigate();
   const [event, setEvent] = useState<EventDetails | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3500/api/event/${eventId.id}`);
+        const response = await axios.get<EventDetails>(`http://localhost:3500/api/event/${eventId.id}`);
         setEvent(response.data);
       } catch (error) {
         console.error('Error fetching event details:', error);
@@ -71,6 +74,24 @@ const EventDetails: React.FC = () => {
       console.error('Error updating event:', error);
     }
   };
+  const handleDeleteEvent = async () => {
+    try {
+      await axios.delete(`http://localhost:3500/api/event/${eventId._id}`);
+      navigate('/events'); // Redirect to the events listing page after deletion
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      // Optionally, handle error state here
+    }
+  };
+
+  const handleOpenConfirmDialog = () => setConfirmOpen(true);
+  const handleCloseConfirmDialog = () => setConfirmOpen(false);
+
+  const handleDeleteEventConfirmed = async () => {
+    handleCloseConfirmDialog();
+    // Place your existing handleDeleteEvent logic here
+    handleDeleteEvent();
+  };
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -95,6 +116,11 @@ const EventDetails: React.FC = () => {
       <Button variant="outlined" onClick={handleOpenEditDialog}>
         Edit Event
       </Button>
+      <Button variant="outlined" color="error" onClick={handleOpenConfirmDialog} sx={{ ml: 2 }}>
+        Delete Event
+      </Button>
+      <ConfirmDialog open={confirmOpen} onClose={handleCloseConfirmDialog} onConfirm={handleDeleteEventConfirmed} />
+
       {event && (
         <EventEditForm
           event={event}
