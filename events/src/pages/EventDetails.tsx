@@ -68,7 +68,7 @@ const EventDetails: React.FC = () => {
   const handleSaveEvent = async (editedEvent: EventDetails) => {
     try {
       await axios.put(`http://localhost:3500/api/event/${editedEvent._id}`, editedEvent);
-      setEvent(editedEvent); // Update local state with the edited event
+      setEvent(editedEvent);
       handleCloseEditDialog();
     } catch (error) {
       console.error('Error updating event:', error);
@@ -76,11 +76,11 @@ const EventDetails: React.FC = () => {
   };
   const handleDeleteEvent = async () => {
     try {
-      await axios.delete(`http://localhost:3500/api/event/${eventId._id}`);
-      navigate('/events'); // Redirect to the events listing page after deletion
+      await axios.delete(`http://localhost:3500/api/event/${eventId.id}`);
+      navigate('/events'); 
     } catch (error) {
       console.error('Error deleting event:', error);
-      // Optionally, handle error state here
+      
     }
   };
 
