@@ -1,5 +1,3 @@
-import React from 'react'
-import Navigation from '../components/Navigation';
 import { Grid } from '@mui/material';
 import {AddEventForm} from './AddEventForm';
 

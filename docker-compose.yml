@@ -1,25 +1,14 @@
-version: "3.8"
-
+version: '3.8'
 services:
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    build: ./api
     ports:
       - "3500:3500"
-    volumes:
-      - ./api:/usr/src/api
     environment:
-      - NODE_ENV=development
-      - MONGO_URI=${DATABASE_URI}
-    depends_on:
-      - events
-
+      DATABASE_URI: mongodb+srv://arafahlawal:Santos.jnr10!@cluster0.ukwcdk8.mongodb.net/?retryWrites=true&w=majority
   events:
-    build:
-      context: ./events
-      dockerfile: Dockerfile
+    build: ./events
     ports:
-      - "3001:80"
-    volumes:
-      - ./events:/app
+      - "5000:5000"
+    depends_on:
+      - api

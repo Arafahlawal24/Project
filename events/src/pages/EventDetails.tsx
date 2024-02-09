@@ -6,7 +6,7 @@ import {EventEditForm} from '../components/EventEditForm'; // Import the EventEd
 
 
 interface Ticket {
-  _id: string;
+  _id?: string;
   name: string;
   type: 'adult' | 'family' | 'child';
   price: number;
@@ -15,7 +15,7 @@ interface Ticket {
 }
 
 interface EventDetails {
-  _id: string;
+  _id?: string;
   name: string;
   date: string;
   description: string;
