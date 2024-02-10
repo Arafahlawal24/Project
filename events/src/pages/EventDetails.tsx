@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Container, Typography, CircularProgress, Button   } from '@mui/material';
 import {EventEditForm} from '../components/EventEditForm'; 
 import {ConfirmDialog} from '../components/ConfirmDialog';
-import {Event, Ticket} from "../components/Interfaces/Event"
+import {Event} from "../components/Interfaces/Event"
   
 
 const EventDetails: React.FC = () => {

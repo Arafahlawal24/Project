@@ -3,23 +3,9 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 import { Container, Typography } from '@mui/material';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import {Event} from "../components/Interfaces/Event"
 
-interface Ticket {
-  _id?: string;
-  name: string;
-  type: 'adult' | 'family' | 'child';
-  price: number;
-  bookingFee: number;
-  availability: 'available' | 'sold out';
-}
 
-interface Event {
-  _id?: string; // Optional for new events
-  name: string;
-  date: string;
-  description: string;
-  tickets: Ticket[];
-}
 
 const EventList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);

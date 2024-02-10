@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectEventsStatus, selectEventsError } from '../feature/eventSlice';
 import { AppDispatch } from '../../store';
 import {Event as EventFormValues, Ticket} from "../components/Interfaces/Event"
-import {Error as FormErrors} from '../components/Interfaces/Error'
+import { FormErrors } from '../components/Interfaces/Error'
 
 const initialTicket: Ticket = {
   name: '',
