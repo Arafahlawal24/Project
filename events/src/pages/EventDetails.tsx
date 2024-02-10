@@ -4,29 +4,13 @@ import axios from 'axios';
 import { Container, Typography, CircularProgress, Button   } from '@mui/material';
 import {EventEditForm} from '../components/EventEditForm'; 
 import {ConfirmDialog} from '../components/ConfirmDialog';
-
+import {Event, Ticket} from "../components/Interfaces/Event"
   
-interface Ticket {
-  _id?: string;
-  name: string;
-  type: 'adult' | 'family' | 'child';
-  price: number;
-  bookingFee: number;
-  availability: 'available' | 'sold out';
-}
-
-interface EventDetails {
-  _id?: string;
-  name: string;
-  date: string;
-  description: string;
-  tickets: Ticket[];
-}
 
 const EventDetails: React.FC = () => {
   const eventId = useParams();
   const navigate = useNavigate();
-  const [event, setEvent] = useState<EventDetails | null>(null);
+  const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
@@ -35,11 +19,11 @@ const EventDetails: React.FC = () => {
     const fetchEventDetails = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get<EventDetails>(`http://localhost:3500/api/event/${eventId.id}`);
+        const response = await axios.get<Event>(`http://localhost:3500/api/event/${eventId.id}`);
         setEvent(response.data);
       } catch (error) {
         console.error('Error fetching event details:', error);
-        // Optionally, handle error state here
+        // handle error state here
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +49,7 @@ const EventDetails: React.FC = () => {
     setIsEditDialogOpen(false);
   };
 
-  const handleSaveEvent = async (editedEvent: EventDetails) => {
+  const handleSaveEvent = async (editedEvent: Event) => {
     try {
       await axios.put(`http://localhost:3500/api/event/${editedEvent._id}`, editedEvent);
       setEvent(editedEvent);
@@ -86,10 +70,8 @@ const EventDetails: React.FC = () => {
 
   const handleOpenConfirmDialog = () => setConfirmOpen(true);
   const handleCloseConfirmDialog = () => setConfirmOpen(false);
-
   const handleDeleteEventConfirmed = async () => {
     handleCloseConfirmDialog();
-    // Place your existing handleDeleteEvent logic here
     handleDeleteEvent();
   };
 

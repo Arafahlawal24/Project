@@ -4,23 +4,9 @@ import { addEvent } from '../feature/eventSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectEventsStatus, selectEventsError } from '../feature/eventSlice';
 import { AppDispatch } from '../../store';
+import {Event as EventFormValues, Ticket} from "../components/Interfaces/Event"
+import {Error as FormErrors} from '../components/Interfaces/Error'
 
-interface Ticket {
-  _id?: string;
-  name: string;
-  type: 'adult' | 'family' | 'child';
-  price: number;
-  bookingFee: number;
-  availability: 'available' | 'sold out';
-}
-
-interface EventFormValues {
-  _id?: string; 
-  name: string;
-  date: string;
-  description: string;
-  tickets: Ticket[];
-}
 const initialTicket: Ticket = {
   name: '',
   type: 'adult',
@@ -29,15 +15,7 @@ const initialTicket: Ticket = {
   availability: 'available',
 };
 
-interface FormErrors {
-  name?: string;
-  date?: string;
-  tickets?: { 
-    name?: string;
-  }[];
-}
-
-export const AddEventForm: React.FC = () => {
+const AddEventForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const eventStatus = useSelector(selectEventsStatus);
   const eventError = useSelector(selectEventsError);
@@ -252,3 +230,5 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     </Container>
   );
 };
+
+export default AddEventForm;
